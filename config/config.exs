@@ -9,8 +9,7 @@ import Config
 
 config :altamessengerapi,
   ecto_repos: [Altamessengerapi.Repo],
-  migration_primary_key: [type: :uuid]
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime, binary_id: true]
 
 # Configures the endpoint
 config :altamessengerapi, AltamessengerapiWeb.Endpoint,
