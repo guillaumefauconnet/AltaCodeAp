@@ -25,6 +25,8 @@ defmodule AltamessengerapiWeb.Router do
     pipe_through :api
 
     resources "/users", UserController, except: [:new, :edit]
+    resources "/channels", ChannelController, except: [:new, :edit]
+    resources "/messages", MessageController, except: [:new, :edit]
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

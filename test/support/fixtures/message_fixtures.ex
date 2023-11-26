@@ -1,7 +1,7 @@
-defmodule Altamessengerapi.MessageFixtures do
+defmodule Altamessengerapi.MessengerFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `Altamessengerapi.Message` context.
+  entities via the `Altamessengerapi.Messenger` context.
   """
 
   @doc """
@@ -13,8 +13,22 @@ defmodule Altamessengerapi.MessageFixtures do
       |> Enum.into(%{
         username: "some username"
       })
-      |> Altamessengerapi.Message.create_user()
+      |> Altamessengerapi.Messenger.create_user()
 
     user
+  end
+
+  @doc """
+  Generate a channel.
+  """
+  def channel_fixture(attrs \\ %{}) do
+    {:ok, channel} =
+      attrs
+      |> Enum.into(%{
+        name: "some name"
+      })
+      |> Altamessengerapi.Messenger.create_channel()
+
+    channel
   end
 end

@@ -1,9 +1,9 @@
 defmodule AltamessengerapiWeb.UserControllerTest do
   use AltamessengerapiWeb.ConnCase
 
-  import Altamessengerapi.MessageFixtures
+  import Altamessengerapi.MessengerFixtures
 
-  alias Altamessengerapi.Message.User
+  alias Altamessengerapi.Messenger.User
 
   @create_attrs %{
     username: "some username"

@@ -1,5 +1,5 @@
 defmodule AltamessengerapiWeb.UserJSON do
-  alias Altamessengerapi.Message.User
+  alias Altamessengerapi.Messenger.User
 
   @doc """
   Renders a list of users.
