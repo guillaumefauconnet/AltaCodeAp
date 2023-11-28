@@ -39,4 +39,25 @@ defmodule AltamessengerapiWeb.UserSessionController do
     |> put_flash(:info, "Logged out successfully.")
     |> UserAuth.log_out_user()
   end
+
+  def createFromApi(conn, params) do
+    %{"username" => username, "password" => password} = params
+
+    if user = Accounts.get_user_by_email_and_password(username, password) do
+      token = Accounts.create_user_api_token(user)
+
+      conn
+      |> send_resp(:ok, token)
+      #render(conn, :show, token: token)
+      #|> Accounts.create_user_api_token
+    end
+    #user
+    #|> IO.inspect()
+
+    #if user = Accounts.get_user_by_email_and_password(email, password) do
+    #  conn
+    #  |> UserAuth.log_in_user(user, params)
+    #  |> Accounts.create_user_api_token
+    #end
+  end
 end

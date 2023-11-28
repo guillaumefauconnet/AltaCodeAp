@@ -3,3 +3,4 @@
 - Supprimer _build du repo git
 - Mettre en place authentification api (https://hexdocs.pm/phoenix/api_authentication.html)
 - Mettre en place soft delete (https://hexdocs.pm/ecto_soft_delete/Ecto.SoftDelete.Repo.html)
+- Réparer les tests
