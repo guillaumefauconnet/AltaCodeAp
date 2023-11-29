@@ -3,6 +3,7 @@ defmodule AltamessengerapiWeb.UserLoginLiveTest do
 
   import Phoenix.LiveViewTest
   import Altamessengerapi.AccountsFixtures
+  import AltamessengerapiWeb.UserAuth
 
   describe "Log in page" do
     test "renders log in page", %{conn: conn} do

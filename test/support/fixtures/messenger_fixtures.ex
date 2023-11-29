@@ -17,4 +17,18 @@ defmodule Altamessengerapi.MessengerFixtures do
 
     message
   end
+
+  @doc """
+  Generate a channel.
+  """
+  def channel_fixture(attrs \\ %{}) do
+    {:ok, channel} =
+      attrs
+      |> Enum.into(%{
+        name: "some name"
+      })
+      |> Altamessengerapi.Messenger.create_channel()
+
+    channel
+  end
 end

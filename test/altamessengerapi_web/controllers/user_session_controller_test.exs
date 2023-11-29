@@ -2,6 +2,7 @@ defmodule AltamessengerapiWeb.UserSessionControllerTest do
   use AltamessengerapiWeb.ConnCase, async: true
 
   import Altamessengerapi.AccountsFixtures
+  import AltamessengerapiWeb.UserAuth
 
   setup do
     %{user: user_fixture()}

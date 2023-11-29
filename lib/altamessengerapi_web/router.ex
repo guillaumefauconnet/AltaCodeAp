@@ -18,6 +18,10 @@ defmodule AltamessengerapiWeb.Router do
     plug :fetch_api_user
   end
 
+  pipeline :apinoauth do
+    plug :accepts, ["json"]
+  end
+
   scope "/", AltamessengerapiWeb do
     pipe_through :browser
 
@@ -26,13 +30,14 @@ defmodule AltamessengerapiWeb.Router do
 
   # Other scopes may use custom stacks.
   scope "/api", AltamessengerapiWeb do
+    pipe_through :apinoauth
+
     post "/users/token", UserSessionController, :createFromApi
   end
 
   scope "/api", AltamessengerapiWeb do
     pipe_through :api
 
-    post "/users/token", UserSessionController, :createFromApi
     resources "/channels", ChannelController, except: [:new, :edit]
     resources "/messages", MessageController, except: [:new, :edit]
   end

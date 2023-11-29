@@ -4,6 +4,7 @@ defmodule AltamessengerapiWeb.UserSettingsLiveTest do
   alias Altamessengerapi.Accounts
   import Phoenix.LiveViewTest
   import Altamessengerapi.AccountsFixtures
+  import AltamessengerapiWeb.UserAuth
 
   describe "Settings page" do
     test "renders settings page", %{conn: conn} do

@@ -1,6 +1,3 @@
 - Faire en sorte que l'on ai les droits d'écriture dans les fichiers générés par l'instance docker phoenix
-- Voir pour "not null" dans l'entité "Message" sur les champs "user_id" et "channel_id"
-- Supprimer _build du repo git
-- Mettre en place authentification api (https://hexdocs.pm/phoenix/api_authentication.html)
 - Mettre en place soft delete (https://hexdocs.pm/ecto_soft_delete/Ecto.SoftDelete.Repo.html)
 - Réparer les tests

@@ -3,6 +3,7 @@ defmodule AltamessengerapiWeb.UserRegistrationLiveTest do
 
   import Phoenix.LiveViewTest
   import Altamessengerapi.AccountsFixtures
+  import AltamessengerapiWeb.UserAuth
 
   describe "Registration page" do
     test "renders registration page", %{conn: conn} do

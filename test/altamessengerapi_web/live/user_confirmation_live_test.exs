@@ -3,6 +3,7 @@ defmodule AltamessengerapiWeb.UserConfirmationLiveTest do
 
   import Phoenix.LiveViewTest
   import Altamessengerapi.AccountsFixtures
+  import AltamessengerapiWeb.UserAuth
 
   alias Altamessengerapi.Accounts
   alias Altamessengerapi.Repo

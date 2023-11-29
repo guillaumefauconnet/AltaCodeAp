@@ -1,6 +1,8 @@
 defmodule Altamessengerapi.MessengerTest do
   use Altamessengerapi.DataCase
 
+  import Altamessengerapi.AccountsFixtures
+
   alias Altamessengerapi.Messenger
 
   describe "users" do

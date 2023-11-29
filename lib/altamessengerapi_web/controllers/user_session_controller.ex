@@ -47,17 +47,7 @@ defmodule AltamessengerapiWeb.UserSessionController do
       token = Accounts.create_user_api_token(user)
 
       conn
-      |> send_resp(:ok, token)
-      #render(conn, :show, token: token)
-      #|> Accounts.create_user_api_token
+      |> render(:show, token: token)
     end
-    #user
-    #|> IO.inspect()
-
-    #if user = Accounts.get_user_by_email_and_password(email, password) do
-    #  conn
-    #  |> UserAuth.log_in_user(user, params)
-    #  |> Accounts.create_user_api_token
-    #end
   end
 end
