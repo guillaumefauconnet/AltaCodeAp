@@ -1,63 +1,7 @@
 defmodule Altamessengerapi.MessengerTest do
   use Altamessengerapi.DataCase
 
-  import Altamessengerapi.AccountsFixtures
-
   alias Altamessengerapi.Messenger
-
-  describe "users" do
-    alias Altamessengerapi.Messenger.User
-
-    import Altamessengerapi.MessengerFixtures
-
-    @invalid_attrs %{username: nil}
-
-    test "list_users/0 returns all users" do
-      user = user_fixture()
-      assert Messenger.list_users() == [user]
-    end
-
-    test "get_user!/1 returns the user with given id" do
-      user = user_fixture()
-      assert Messenger.get_user!(user.id) == user
-    end
-
-    test "create_user/1 with valid data creates a user" do
-      valid_attrs = %{username: "some username"}
-
-      assert {:ok, %User{} = user} = Messenger.create_user(valid_attrs)
-      assert user.username == "some username"
-    end
-
-    test "create_user/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Messenger.create_user(@invalid_attrs)
-    end
-
-    test "update_user/2 with valid data updates the user" do
-      user = user_fixture()
-      update_attrs = %{username: "some updated username"}
-
-      assert {:ok, %User{} = user} = Messenger.update_user(user, update_attrs)
-      assert user.username == "some updated username"
-    end
-
-    test "update_user/2 with invalid data returns error changeset" do
-      user = user_fixture()
-      assert {:error, %Ecto.Changeset{}} = Messenger.update_user(user, @invalid_attrs)
-      assert user == Messenger.get_user!(user.id)
-    end
-
-    test "delete_user/1 deletes the user" do
-      user = user_fixture()
-      assert {:ok, %User{}} = Messenger.delete_user(user)
-      assert_raise Ecto.NoResultsError, fn -> Messenger.get_user!(user.id) end
-    end
-
-    test "change_user/1 returns a user changeset" do
-      user = user_fixture()
-      assert %Ecto.Changeset{} = Messenger.change_user(user)
-    end
-  end
 
   describe "channels" do
     alias Altamessengerapi.Messenger.Channel
@@ -131,7 +75,10 @@ defmodule Altamessengerapi.MessengerTest do
     end
 
     test "create_message/1 with valid data creates a message" do
-      valid_attrs = %{message: "some message"}
+      user = Altamessengerapi.AccountsFixtures.user_fixture()
+      channel = Altamessengerapi.MessengerFixtures.channel_fixture()
+
+      valid_attrs = %{message: "some message", channel_id: channel.id, user_id: user.id}
 
       assert {:ok, %Message{} = message} = Messenger.create_message(valid_attrs)
       assert message.message == "some message"

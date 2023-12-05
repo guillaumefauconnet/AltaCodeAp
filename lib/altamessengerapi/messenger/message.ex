@@ -7,7 +7,7 @@ defmodule Altamessengerapi.Messenger.Message do
   schema "messages" do
     field :message, :string
     belongs_to :channel, Altamessengerapi.Messenger.Channel
-    belongs_to :user, Altamessengerapi.Messenger.User
+    belongs_to :user, Altamessengerapi.Accounts.User
 
     timestamps(type: :utc_datetime)
   end
@@ -15,7 +15,9 @@ defmodule Altamessengerapi.Messenger.Message do
   @doc false
   def changeset(message, attrs) do
     message
-    |> cast(attrs, [:message])
+    |> cast(attrs, [:message, :channel_id, :user_id])
+    |> assoc_constraint(:channel)
+    |> assoc_constraint(:user)
     |> validate_required([:message])
   end
 end

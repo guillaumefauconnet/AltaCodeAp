@@ -8,10 +8,14 @@ defmodule Altamessengerapi.MessengerFixtures do
   Generate a message.
   """
   def message_fixture(attrs \\ %{}) do
+    user = Altamessengerapi.AccountsFixtures.user_fixture()
+    channel = channel_fixture()
     {:ok, message} =
       attrs
       |> Enum.into(%{
-        message: "some message"
+        message: "some message",
+        channel_id: channel.id,
+        user_id: user.id
       })
       |> Altamessengerapi.Messenger.create_message()
 

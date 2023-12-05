@@ -2,6 +2,7 @@ defmodule AltamessengerapiWeb.MessageControllerTest do
   use AltamessengerapiWeb.ConnCase
 
   import Altamessengerapi.MessengerFixtures
+  import Altamessengerapi.AccountsFixtures
 
   alias Altamessengerapi.Messenger.Message
 
@@ -14,7 +15,20 @@ defmodule AltamessengerapiWeb.MessageControllerTest do
   @invalid_attrs %{message: nil}
 
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    user = user_fixture()
+    conn = conn
+           |> post(~p"/api/users/token", %{
+      "username" => user.email,
+      "password" => valid_user_password()
+    })
+
+    %{"token" => token } = json_response(conn, 200)
+
+    conn = recycle(conn)
+    conn = put_req_header(conn, "accept", "application/json")
+    conn = put_req_header(conn, "authorization", "Bearer" <> " " <> token)
+
+    {:ok, conn: conn}
   end
 
   describe "index" do

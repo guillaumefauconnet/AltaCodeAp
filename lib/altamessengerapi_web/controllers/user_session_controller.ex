@@ -48,6 +48,10 @@ defmodule AltamessengerapiWeb.UserSessionController do
 
       conn
       |> render(:show, token: token)
-    end
+    else
+      # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
+      conn
+      |> redirect(to: ~p"/users/log_in")
+  end
   end
 end

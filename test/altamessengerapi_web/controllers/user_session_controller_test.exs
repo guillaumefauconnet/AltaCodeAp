@@ -2,7 +2,6 @@ defmodule AltamessengerapiWeb.UserSessionControllerTest do
   use AltamessengerapiWeb.ConnCase, async: true
 
   import Altamessengerapi.AccountsFixtures
-  import AltamessengerapiWeb.UserAuth
 
   setup do
     %{user: user_fixture()}
@@ -98,7 +97,16 @@ defmodule AltamessengerapiWeb.UserSessionControllerTest do
 
   describe "DELETE /users/log_out" do
     test "logs the user out", %{conn: conn, user: user} do
-      conn = conn |> log_in_user(user) |> delete(~p"/users/log_out")
+      conn = conn
+        |> init_test_session(user_return_to: "/foo/bar")
+        |> post(~p"/users/log_in", %{
+          "user" => %{
+            "email" => user.email,
+            "password" => valid_user_password()
+          }
+        })
+        |> delete(~p"/users/log_out")
+
       assert redirected_to(conn) == ~p"/"
       refute get_session(conn, :user_token)
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Logged out successfully"

@@ -4,13 +4,25 @@ defmodule AltamessengerapiWeb.UserSettingsLiveTest do
   alias Altamessengerapi.Accounts
   import Phoenix.LiveViewTest
   import Altamessengerapi.AccountsFixtures
-  import AltamessengerapiWeb.UserAuth
+
+  setup %{conn: conn} do
+    user = user_fixture()
+    password = valid_user_password()
+    conn = conn
+    |> init_test_session(user_return_to: "/foo/bar")
+    |> post(~p"/users/log_in", %{
+      "user" => %{
+        "email" => user.email,
+        "password" => password
+      }
+    })
+
+    %{user: user, conn: conn, password: password}
+  end
 
   describe "Settings page" do
     test "renders settings page", %{conn: conn} do
-      {:ok, _lv, html} =
-        conn
-        |> log_in_user(user_fixture())
+      {:ok, _lv, html} = conn
         |> live(~p"/users/settings")
 
       assert html =~ "Change Email"
@@ -18,7 +30,10 @@ defmodule AltamessengerapiWeb.UserSettingsLiveTest do
     end
 
     test "redirects if user is not logged in", %{conn: conn} do
-      assert {:error, redirect} = live(conn, ~p"/users/settings")
+      assert {:error, redirect} = conn
+        |> delete(~p"/users/log_out")
+        |> recycle()
+        |> live(~p"/users/settings")
 
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/log_in"
@@ -27,12 +42,6 @@ defmodule AltamessengerapiWeb.UserSettingsLiveTest do
   end
 
   describe "update email form" do
-    setup %{conn: conn} do
-      password = valid_user_password()
-      user = user_fixture(%{password: password})
-      %{conn: log_in_user(conn, user), user: user, password: password}
-    end
-
     test "updates the user email", %{conn: conn, password: password, user: user} do
       new_email = unique_user_email()
 
@@ -84,12 +93,6 @@ defmodule AltamessengerapiWeb.UserSettingsLiveTest do
   end
 
   describe "update password form" do
-    setup %{conn: conn} do
-      password = valid_user_password()
-      user = user_fixture(%{password: password})
-      %{conn: log_in_user(conn, user), user: user, password: password}
-    end
-
     test "updates the user password", %{conn: conn, user: user, password: password} do
       new_password = valid_user_password()
 
@@ -120,6 +123,7 @@ defmodule AltamessengerapiWeb.UserSettingsLiveTest do
     end
 
     test "renders errors with invalid data (phx-change)", %{conn: conn} do
+      recycle(conn)
       {:ok, lv, _html} = live(conn, ~p"/users/settings")
 
       result =
@@ -162,18 +166,32 @@ defmodule AltamessengerapiWeb.UserSettingsLiveTest do
   describe "confirm email" do
     setup %{conn: conn} do
       user = user_fixture()
+      password = valid_user_password()
       email = unique_user_email()
-
-      token =
-        extract_user_token(fn url ->
+      token = extract_user_token(fn url ->
           Accounts.deliver_user_update_email_instructions(%{user | email: email}, user.email, url)
-        end)
+      end)
 
-      %{conn: log_in_user(conn, user), token: token, email: email, user: user}
+      IO.inspect(token)
+
+      conn = conn
+        |> recycle()
+        |> init_test_session(user_return_to: "/foo/bar")
+        |> post(~p"/users/log_in", %{
+        "user" => %{
+          "email" => user.email,
+          "password" => password
+        }
+      })
+
+      %{conn: conn, token: token, email: email, user: user}
     end
 
     test "updates the user email once", %{conn: conn, user: user, token: token, email: email} do
-      {:error, redirect} = live(conn, ~p"/users/settings/confirm_email/#{token}")
+      {:error, redirect} = conn
+        |> live(~p"/users/settings/confirm_email/#{token}")
+
+      IO.inspect(redirect)
 
       assert {:live_redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/settings"
@@ -199,9 +217,11 @@ defmodule AltamessengerapiWeb.UserSettingsLiveTest do
       assert Accounts.get_user_by_email(user.email)
     end
 
-    test "redirects if user is not logged in", %{token: token} do
-      conn = build_conn()
-      {:error, redirect} = live(conn, ~p"/users/settings/confirm_email/#{token}")
+    test "redirects if user is not logged in", %{conn: conn, token: token} do
+      {:error, redirect} = conn
+        |> delete(~p"/users/log_out")
+        |> recycle()
+        |> live(~p"/users/settings/confirm_email/#{token}")
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/log_in"
       assert %{"error" => message} = flash

@@ -8,7 +8,7 @@ defmodule Altamessengerapi.Messenger.Channel do
     field :name, :string
 
     has_many :messages, Altamessengerapi.Messenger.Message
-    many_to_many :users, Altamessengerapi.Messenger.User, join_through: "users_channels"
+    many_to_many :users, Altamessengerapi.Accounts.User, join_through: "users_channels"
 
     timestamps(type: :utc_datetime)
   end
