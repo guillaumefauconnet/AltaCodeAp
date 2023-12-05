@@ -165,11 +165,10 @@ defmodule AltamessengerapiWeb.UserSettingsLiveTest do
 
   describe "confirm email" do
     setup %{conn: conn} do
-      user = user_fixture()
-      password = valid_user_password()
+      user = user_fixture(%{password: valid_user_password()})
       email = unique_user_email()
       token = extract_user_token(fn url ->
-          Accounts.deliver_user_update_email_instructions(%{user | email: email}, user.email, url)
+          Accounts.deliver_user_update_email_instructions(user, email, url)
       end)
 
       IO.inspect(token)
@@ -178,11 +177,11 @@ defmodule AltamessengerapiWeb.UserSettingsLiveTest do
         |> recycle()
         |> init_test_session(user_return_to: "/foo/bar")
         |> post(~p"/users/log_in", %{
-        "user" => %{
-          "email" => user.email,
-          "password" => password
-        }
-      })
+          "user" => %{
+            "email" => user.email,
+            "password" => valid_user_password()
+          }
+        })
 
       %{conn: conn, token: token, email: email, user: user}
     end

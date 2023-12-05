@@ -3,7 +3,6 @@ defmodule AltamessengerapiWeb.UserLoginLiveTest do
 
   import Phoenix.LiveViewTest
   import Altamessengerapi.AccountsFixtures
-  import AltamessengerapiWeb.UserAuth
 
   describe "Log in page" do
     test "renders log in page", %{conn: conn} do
@@ -15,9 +14,16 @@ defmodule AltamessengerapiWeb.UserLoginLiveTest do
     end
 
     test "redirects if already logged in", %{conn: conn} do
+      user = user_fixture()
       result =
         conn
-        |> log_in_user(user_fixture())
+        |> init_test_session(user_return_to: "/foo/bar")
+        |> post(~p"/users/log_in", %{
+          "user" => %{
+            "email" => user.email,
+            "password" => valid_user_password()
+          }
+        })
         |> live(~p"/users/log_in")
         |> follow_redirect(conn, "/")
 

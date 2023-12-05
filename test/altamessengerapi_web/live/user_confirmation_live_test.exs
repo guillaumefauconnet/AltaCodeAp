@@ -3,7 +3,6 @@ defmodule AltamessengerapiWeb.UserConfirmationLiveTest do
 
   import Phoenix.LiveViewTest
   import Altamessengerapi.AccountsFixtures
-  import AltamessengerapiWeb.UserAuth
 
   alias Altamessengerapi.Accounts
   alias Altamessengerapi.Repo
@@ -58,7 +57,13 @@ defmodule AltamessengerapiWeb.UserConfirmationLiveTest do
       # when logged in
       conn =
         build_conn()
-        |> log_in_user(user)
+        |> init_test_session(user_return_to: "/foo/bar")
+        |> post(~p"/users/log_in", %{
+          "user" => %{
+            "email" => user.email,
+            "password" => valid_user_password()
+          }
+        })
 
       {:ok, lv, _html} = live(conn, ~p"/users/confirm/#{token}")
 

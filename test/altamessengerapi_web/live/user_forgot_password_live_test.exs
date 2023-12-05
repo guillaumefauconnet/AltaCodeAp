@@ -3,7 +3,6 @@ defmodule AltamessengerapiWeb.UserForgotPasswordLiveTest do
 
   import Phoenix.LiveViewTest
   import Altamessengerapi.AccountsFixtures
-  import AltamessengerapiWeb.UserAuth
 
   alias Altamessengerapi.Accounts
   alias Altamessengerapi.Repo
@@ -18,9 +17,16 @@ defmodule AltamessengerapiWeb.UserForgotPasswordLiveTest do
     end
 
     test "redirects if already logged in", %{conn: conn} do
+      user = user_fixture()
       result =
         conn
-        |> log_in_user(user_fixture())
+        |> init_test_session(user_return_to: "/foo/bar")
+        |> post(~p"/users/log_in", %{
+          "user" => %{
+            "email" => user.email,
+            "password" => valid_user_password()
+          }
+        })
         |> live(~p"/users/reset_password")
         |> follow_redirect(conn, ~p"/")
 

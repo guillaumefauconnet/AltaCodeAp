@@ -1,3 +1,4 @@
 - Faire en sorte que l'on ai les droits d'écriture dans les fichiers générés par l'instance docker phoenix
 - Mettre en place soft delete (https://hexdocs.pm/ecto_soft_delete/Ecto.SoftDelete.Repo.html)
-- Réparer les tests
+- Réparer les tests (plus qu'un)
+- Mettre en place le debug

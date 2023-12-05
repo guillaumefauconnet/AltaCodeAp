@@ -6,9 +6,6 @@ defmodule AltamessengerapiWeb.MessageControllerTest do
 
   alias Altamessengerapi.Messenger.Message
 
-  @create_attrs %{
-    message: "some message"
-  }
   @update_attrs %{
     message: "some updated message"
   }
@@ -40,7 +37,14 @@ defmodule AltamessengerapiWeb.MessageControllerTest do
 
   describe "create message" do
     test "renders message when data is valid", %{conn: conn} do
-      conn = post(conn, ~p"/api/messages", message: @create_attrs)
+      message = message_fixture()
+      conn = post(conn, ~p"/api/messages", %{
+        "message" => %{
+          "message" => message.message,
+          "channel_id" => message.channel_id,
+          "user_id" => message.user_id
+        }
+      })
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, ~p"/api/messages/#{id}")

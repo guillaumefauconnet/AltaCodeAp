@@ -3,7 +3,6 @@ defmodule AltamessengerapiWeb.UserRegistrationLiveTest do
 
   import Phoenix.LiveViewTest
   import Altamessengerapi.AccountsFixtures
-  import AltamessengerapiWeb.UserAuth
 
   describe "Registration page" do
     test "renders registration page", %{conn: conn} do
@@ -14,9 +13,16 @@ defmodule AltamessengerapiWeb.UserRegistrationLiveTest do
     end
 
     test "redirects if already logged in", %{conn: conn} do
+      user = user_fixture()
       result =
         conn
-        |> log_in_user(user_fixture())
+        |> init_test_session(user_return_to: "/foo/bar")
+        |> post(~p"/users/log_in", %{
+          "user" => %{
+            "email" => user.email,
+            "password" => valid_user_password()
+          }
+        })
         |> live(~p"/users/register")
         |> follow_redirect(conn, "/")
 
