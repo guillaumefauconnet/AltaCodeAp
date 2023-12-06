@@ -2,6 +2,7 @@ defmodule AltamessengerapiWeb.UserSettingsLiveTest do
   use AltamessengerapiWeb.ConnCase
 
   alias Altamessengerapi.Accounts
+
   import Phoenix.LiveViewTest
   import Altamessengerapi.AccountsFixtures
 
@@ -164,33 +165,18 @@ defmodule AltamessengerapiWeb.UserSettingsLiveTest do
   end
 
   describe "confirm email" do
-    setup %{conn: conn} do
-      user = user_fixture(%{password: valid_user_password()})
+    setup %{conn: conn, user: user} do
       email = unique_user_email()
+
       token = extract_user_token(fn url ->
-          Accounts.deliver_user_update_email_instructions(user, email, url)
+          Accounts.deliver_user_update_email_instructions(%{user | email: email}, user.email, url)
       end)
-
-      IO.inspect(token)
-
-      conn = conn
-        |> recycle()
-        |> init_test_session(user_return_to: "/foo/bar")
-        |> post(~p"/users/log_in", %{
-          "user" => %{
-            "email" => user.email,
-            "password" => valid_user_password()
-          }
-        })
 
       %{conn: conn, token: token, email: email, user: user}
     end
 
     test "updates the user email once", %{conn: conn, user: user, token: token, email: email} do
-      {:error, redirect} = conn
-        |> live(~p"/users/settings/confirm_email/#{token}")
-
-      IO.inspect(redirect)
+      {:error, redirect} = live(conn, ~p"/users/settings/confirm_email/#{token}")
 
       assert {:live_redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/settings"
